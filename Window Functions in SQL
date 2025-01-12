@@ -1,0 +1,101 @@
+Window Functions in SQL
+1. What are Window Functions?
+Window functions are a special type of SQL function that allow you to perform calculations across a set of rows that are somehow related to the current row, known as the "window." 
+Unlike regular aggregate functions (e.g., SUM(), COUNT(), AVG()), window functions do not collapse the result set into a single row. 
+Instead, they compute values for each row within the context of a specific window or partition of data.
+
+A window is a set of rows that are related to the current row, and window functions allow you to perform calculations on those rows without collapsing them into a single result. 
+The window is defined using OVER(), which can include optional PARTITION BY and ORDER BY clauses.
+
+2. Commonly Used Window Functions
+Here are the most commonly used window functions in SQL:
+
+ROW_NUMBER(): Assigns a unique sequential integer to rows within a partition of a result set.
+RANK(): Assigns a unique rank to each distinct value in a result set, with gaps between ranks if there are ties.
+DENSE_RANK(): Similar to RANK(), but without gaps between ranks when there are ties.
+NTILE(): Divides the result set into a specified number of approximately equal groups.
+LEAD(): Returns the value of the next row in the result set.
+LAG(): Returns the value of the previous row in the result set.
+3. Syntax of Window Functions
+The general syntax for using a window function is as follows:
+
+sql
+Copy code
+SELECT column1, column2, window_function() OVER (PARTITION BY partition_column ORDER BY order_column) AS new_column
+FROM table_name;
+window_function(): The window function you want to use (e.g., ROW_NUMBER(), RANK(), etc.).
+PARTITION BY: (Optional) Divides the data into partitions (groups) based on the specified column(s). The window function operates within each partition.
+ORDER BY: (Optional) Specifies the order in which rows are processed for the window function.
+4. Examples of Window Functions
+Let’s go through some real-time examples to understand how window functions work.
+
+Example 1: ROW_NUMBER()
+Suppose we have a Sales table and we want to assign a sequential number to each row based on the SaleDate, ordered by the amount of sale.
+
+sql
+Copy code
+SELECT SaleID, SaleAmount, SaleDate,
+       ROW_NUMBER() OVER (ORDER BY SaleAmount DESC) AS RowNum
+FROM Sales;
+Explanation:
+ROW_NUMBER() assigns a unique sequential number to each row based on the order of SaleAmount in descending order.
+This could be useful to rank the sales by amount, giving each sale a unique rank.
+Example 2: RANK()
+Let’s assume we have a StudentScores table with columns StudentID, Score, and Subject. We want to rank the students based on their Score in each subject.
+
+sql
+Copy code
+SELECT StudentID, Subject, Score,
+       RANK() OVER (PARTITION BY Subject ORDER BY Score DESC) AS Rank
+FROM StudentScores;
+Explanation:
+RANK() assigns ranks to students based on their Score within each Subject (using PARTITION BY).
+The students with the same score will have the same rank, but the next rank will be skipped. For example, if two students are ranked 1, the next student will be ranked 3.
+Example 3: DENSE_RANK()
+Using the same StudentScores table, let’s use DENSE_RANK() to assign ranks to students, but without gaps in case of ties.
+
+sql
+Copy code
+SELECT StudentID, Subject, Score,
+       DENSE_RANK() OVER (PARTITION BY Subject ORDER BY Score DESC) AS DenseRank
+FROM StudentScores;
+Explanation:
+DENSE_RANK() assigns ranks similarly to RANK(), but without skipping ranks in case of ties. For example, if two students are ranked 1, the next student will be ranked 2 (not 3).
+Example 4: NTILE()
+Let’s use NTILE() to divide students into 4 groups based on their score.
+
+sql
+Copy code
+SELECT StudentID, Subject, Score,
+       NTILE(4) OVER (PARTITION BY Subject ORDER BY Score DESC) AS Quartile
+FROM StudentScores;
+Explanation:
+NTILE(4) divides the students into 4 groups (quartiles) based on their score in each subject. The students with the highest scores will be in the first quartile, and so on.
+Example 5: LEAD()
+Let’s use LEAD() to compare each sale with the next one to see how the sale amounts change over time.
+
+sql
+Copy code
+SELECT SaleID, SaleAmount, SaleDate,
+       LEAD(SaleAmount) OVER (ORDER BY SaleDate) AS NextSaleAmount
+FROM Sales;
+Explanation:
+LEAD(SaleAmount) retrieves the sale amount of the next row, based on the order of SaleDate.
+This is useful to compare current values with future values. For example, comparing the sale amount of today with the sale amount of tomorrow.
+Example 6: LAG()
+Let’s use LAG() to compare each sale with the previous one to track changes in sales over time.
+
+sql
+Copy code
+SELECT SaleID, SaleAmount, SaleDate,
+       LAG(SaleAmount) OVER (ORDER BY SaleDate) AS PreviousSaleAmount
+FROM Sales;
+Explanation:
+LAG(SaleAmount) retrieves the sale amount of the previous row, based on the order of SaleDate.
+This helps to compare the current sale amount with the previous one, which can be useful for identifying trends or calculating the difference in sales.
+5. Key Takeaways
+Window functions allow you to perform calculations across a set of rows related to the current row without collapsing the result set.
+They are especially useful for tasks such as ranking, analyzing data trends, calculating moving averages, and more.
+Common window functions include ROW_NUMBER(), RANK(), DENSE_RANK(), NTILE(), LEAD(), and LAG().
+You can use PARTITION BY to divide the result set into groups (partitions) and ORDER BY to sort the data within those partitions before applying the window function.
+By understanding and utilizing window functions, you can perform advanced analytics and calculations directly within SQL, making them a powerful tool for data analysis.
