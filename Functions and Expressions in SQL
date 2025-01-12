@@ -1,0 +1,184 @@
+2.1 Functions and Expressions in SQL
+SQL functions and expressions provide tools to manipulate and process data. They are categorized into different types based on their purpose: aggregate functions, string functions, and date functions.
+
+2.1.1 Aggregate Functions
+Aggregate functions perform calculations on a set of values and return a single summary value. These are commonly used in reporting, analytics, and data summaries.
+
+1. COUNT()
+Description: Returns the number of rows that match a condition.
+Use Case: Count the number of employees in a department.
+Example:
+
+sql
+Copy code
+SELECT COUNT(*) AS TotalEmployees FROM Employees;
+Result:
+
+TotalEmployees
+50
+2. SUM()
+Description: Adds up numeric values in a column.
+Use Case: Calculate total revenue from sales.
+Example:
+
+sql
+Copy code
+SELECT SUM(TotalAmount) AS TotalRevenue FROM Orders;
+Result:
+
+TotalRevenue
+120000.50
+3. AVG()
+Description: Calculates the average of numeric values.
+Use Case: Find the average salary of employees.
+Example:
+
+sql
+Copy code
+SELECT AVG(Salary) AS AverageSalary FROM Employees;
+Result:
+
+AverageSalary
+75000
+4. MIN() and MAX()
+Description: Returns the smallest or largest value in a column.
+Use Case: Identify the lowest and highest product prices.
+Example:
+
+sql
+Copy code
+SELECT MIN(Price) AS LowestPrice, MAX(Price) AS HighestPrice FROM Products;
+Result:
+
+LowestPrice	HighestPrice
+10.00	1500.00
+2.1.2 String Functions
+String functions allow manipulation and formatting of text data, which is essential for processing textual information like names, addresses, and descriptions.
+
+1. CONCAT()
+Description: Combines two or more strings into one.
+Use Case: Generate full names from first and last names.
+Example:
+
+sql
+Copy code
+SELECT CONCAT(FirstName, ' ', LastName) AS FullName FROM Employees;
+Result:
+
+FullName
+John Smith
+Alice Johnson
+2. SUBSTRING()
+Description: Extracts a portion of a string.
+Use Case: Extract the domain from email addresses.
+Example:
+
+sql
+Copy code
+SELECT SUBSTRING(Email, LOCATE('@', Email) + 1) AS Domain FROM Customers;
+Result:
+
+Domain
+gmail.com
+yahoo.com
+3. UPPER() and LOWER()
+Description: Converts text to uppercase or lowercase.
+Use Case: Standardize names in reports.
+Example:
+
+sql
+Copy code
+SELECT UPPER(Name) AS UpperName, LOWER(Name) AS LowerName FROM Customers;
+Result:
+
+UpperName	LowerName
+JOHN SMITH	john smith
+ALICE JOHNSON	alice johnson
+4. TRIM()
+Description: Removes leading and trailing spaces from a string.
+Use Case: Clean up improperly formatted data.
+Example:
+
+sql
+Copy code
+SELECT TRIM('   John Doe   ') AS CleanedName;
+Result:
+
+CleanedName
+John Doe
+2.1.3 Date Functions
+Date functions allow manipulation and extraction of date and time values, essential for handling temporal data like order dates, birthdates, and timestamps.
+
+1. NOW()
+Description: Returns the current date and time.
+Use Case: Get the current timestamp for logging purposes.
+Example:
+
+sql
+Copy code
+SELECT NOW() AS CurrentDateTime;
+Result:
+
+CurrentDateTime
+2025-01-12 10:30:00
+2. DATE_ADD() and DATE_SUB()
+Description: Adds or subtracts a time interval from a date.
+Use Case: Calculate the expiration date for a subscription.
+Example:
+
+sql
+Copy code
+SELECT DATE_ADD('2025-01-01', INTERVAL 30 DAY) AS ExpirationDate;
+Result:
+
+ExpirationDate
+2025-01-31
+3. YEAR(), MONTH(), and DAY()
+Description: Extracts specific components of a date.
+Use Case: Analyze data by year or month.
+Example:
+
+sql
+Copy code
+SELECT YEAR(OrderDate) AS OrderYear, MONTH(OrderDate) AS OrderMonth FROM Orders;
+Result:
+
+OrderYear	OrderMonth
+2024	12
+2025	01
+Full Real-World Example
+Scenario:
+You have an Orders table with the following schema and data:
+
+OrderID	CustomerName	OrderDate	TotalAmount
+1	John Doe	2025-01-01	100.50
+2	Alice Lee	2025-01-05	200.75
+3	Bob Smith	2025-01-10	150.00
+Task 1: Calculate the total revenue.
+sql
+Copy code
+SELECT SUM(TotalAmount) AS TotalRevenue FROM Orders;
+Result:
+
+TotalRevenue
+451.25
+Task 2: Find the first and last order dates.
+sql
+Copy code
+SELECT MIN(OrderDate) AS FirstOrder, MAX(OrderDate) AS LastOrder FROM Orders;
+Result:
+
+FirstOrder	LastOrder
+2025-01-01	2025-01-10
+Task 3: Get the year and month of each order.
+sql
+Copy code
+SELECT OrderID, YEAR(OrderDate) AS Year, MONTH(OrderDate) AS Month FROM Orders;
+Result:
+
+OrderID	Year	Month
+1	2025	1
+2	2025	1
+3	2025	1
+Conclusion
+Mastering these functions allows you to efficiently query and manipulate data for real-world scenarios, whether you're summarizing sales data, processing customer information, or analyzing time-based trends. These foundational skills are essential for advanced SQL development and application-building.
