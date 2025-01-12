@@ -1,0 +1,114 @@
+1.2 Basic SQL Commands
+SQL (Structured Query Language) provides basic commands to interact with databases. These commands fall into the Data Manipulation Language (DML) category, allowing users to retrieve, insert, update, and delete data from tables. Below are the commands with explanations and real-world examples.
+
+1.2.1 SELECT Command
+The SELECT command retrieves data from one or more tables. It allows users to specify which columns to display and includes options to filter, sort, and aggregate the data.
+
+Syntax:
+sql
+Copy code
+SELECT column1, column2, ... FROM table_name WHERE condition;
+Real-World Example:
+Imagine a table called Employees:
+
+Employee_ID	Name	Department	Salary
+1	Alice	HR	60000
+2	Bob	IT	75000
+3	Charlie	IT	80000
+4	Daisy	Finance	70000
+Retrieve all data from the table:
+
+sql
+Copy code
+SELECT * FROM Employees;
+Retrieve specific columns:
+
+sql
+Copy code
+SELECT Name, Department FROM Employees;
+Filter rows using a condition:
+
+sql
+Copy code
+SELECT Name, Salary FROM Employees WHERE Department = 'IT';
+Result:
+
+Name	Salary
+Bob	75000
+Charlie	80000
+1.2.2 INSERT Command
+The INSERT command adds new records to a table.
+
+Syntax:
+sql
+Copy code
+INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...);
+Real-World Example:
+Add a new employee to the Employees table.
+
+sql
+Copy code
+INSERT INTO Employees (Employee_ID, Name, Department, Salary) 
+VALUES (5, 'Eve', 'Marketing', 65000);
+Updated Employees table:
+
+Employee_ID	Name	Department	Salary
+1	Alice	HR	60000
+2	Bob	IT	75000
+3	Charlie	IT	80000
+4	Daisy	Finance	70000
+5	Eve	Marketing	65000
+1.2.3 UPDATE Command
+The UPDATE command modifies existing records in a table.
+
+Syntax:
+sql
+Copy code
+UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition;
+Real-World Example:
+Increase the salary of all employees in the IT department by 10%.
+
+sql
+Copy code
+UPDATE Employees 
+SET Salary = Salary * 1.10 
+WHERE Department = 'IT';
+Updated Employees table:
+
+Employee_ID	Name	Department	Salary
+1	Alice	HR	60000
+2	Bob	IT	82500
+3	Charlie	IT	88000
+4	Daisy	Finance	70000
+5	Eve	Marketing	65000
+1.2.4 DELETE Command
+The DELETE command removes records from a table.
+
+Syntax:
+sql
+Copy code
+DELETE FROM table_name WHERE condition;
+Real-World Example:
+Remove an employee from the Employees table where the Employee_ID is 5.
+
+sql
+Copy code
+DELETE FROM Employees WHERE Employee_ID = 5;
+Updated Employees table:
+
+Employee_ID	Name	Department	Salary
+1	Alice	HR	60000
+2	Bob	IT	82500
+3	Charlie	IT	88000
+4	Daisy	Finance	70000
+Summary of Commands
+Command	Purpose	Example
+SELECT	Retrieve data from one or more tables	SELECT * FROM Employees;
+INSERT	Add new records to a table	INSERT INTO Employees VALUES (5, 'Eve', ...);
+UPDATE	Modify existing records	UPDATE Employees SET Salary = ... WHERE ...;
+DELETE	Remove records from a table	DELETE FROM Employees WHERE Employee_ID = 5;
+Key Notes:
+WHERE Clause: Always use the WHERE clause in UPDATE and DELETE commands to avoid unintended changes to all rows.
+Best Practices:
+Backup your data before performing mass updates or deletions.
+Use SELECT first to preview data before modifying or deleting.
