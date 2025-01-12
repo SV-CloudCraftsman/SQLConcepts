@@ -1,0 +1,141 @@
+User-Defined Functions (UDFs) in SQL
+1. What is a User-Defined Function (UDF)?
+A User-Defined Function (UDF) is a function created by the user to perform specific operations or calculations in SQL. Unlike system-defined functions like SUM(), AVG(), or COUNT(), which come built-in with SQL, a UDF is defined by the user to meet specific business or application requirements. UDFs help improve code reusability and encapsulate complex logic in a single function.
+
+A UDF can return a single value or a table, depending on its design. UDFs can be used within SQL queries to perform operations, calculations, or transformations on the data.
+
+2. Syntax for Creating a User-Defined Function (UDF)
+The basic syntax for creating a scalar function (that returns a single value) is:
+
+sql
+Copy code
+CREATE FUNCTION function_name (parameters)
+RETURNS datatype AS
+BEGIN
+    SQL_STATEMENTS;
+    RETURN result;
+END;
+function_name: Name of the user-defined function.
+parameters: Parameters that the function will accept, if any.
+RETURNS datatype: The type of value the function will return (e.g., INT, VARCHAR, etc.).
+SQL_STATEMENTS: The SQL code inside the function to perform the required operation.
+RETURN result: The result to be returned from the function.
+3. Real-Time Example of User-Defined Functions
+Example 1: Scalar UDF for Calculating Discount
+Let's say we want to calculate a discount based on the order amount. We will define a function that takes the order amount as input and returns the discount amount.
+
+UDF to Calculate Discount:
+
+sql
+Copy code
+CREATE FUNCTION CalculateDiscount
+    (@OrderAmount DECIMAL(10, 2))
+RETURNS DECIMAL(10, 2) AS
+BEGIN
+    DECLARE @Discount DECIMAL(10, 2);
+    IF @OrderAmount > 1000
+        SET @Discount = @OrderAmount * 0.10; -- 10% discount for orders over 1000
+    ELSE
+        SET @Discount = @OrderAmount * 0.05; -- 5% discount for orders below or equal to 1000
+    RETURN @Discount;
+END;
+Explanation:
+
+The function CalculateDiscount takes an input parameter @OrderAmount.
+If the order amount is greater than 1000, it applies a 10% discount; otherwise, a 5% discount is applied.
+The function returns the calculated discount amount.
+Calling the UDF:
+
+You can use the function inside a SELECT statement to calculate the discount for each order:
+
+sql
+Copy code
+SELECT OrderID, OrderAmount, dbo.CalculateDiscount(OrderAmount) AS Discount
+FROM Orders;
+This will return the OrderID, OrderAmount, and the corresponding Discount for each order.
+
+Example 2: Scalar UDF for Full Name
+Let's say you have a table Employees with FirstName and LastName columns, and you want to create a function that combines these two columns into a full name.
+
+UDF to Combine First and Last Name:
+
+sql
+Copy code
+CREATE FUNCTION GetFullName
+    (@FirstName VARCHAR(50), @LastName VARCHAR(50))
+RETURNS VARCHAR(100) AS
+BEGIN
+    RETURN @FirstName + ' ' + @LastName;
+END;
+Explanation:
+
+The function GetFullName accepts two parameters: @FirstName and @LastName.
+It concatenates the first and last names with a space in between and returns the full name.
+Calling the UDF:
+
+You can use the function to retrieve the full name of employees:
+
+sql
+Copy code
+SELECT EmployeeID, dbo.GetFullName(FirstName, LastName) AS FullName
+FROM Employees;
+This will return the EmployeeID along with the FullName (first name and last name concatenated).
+
+Example 3: Table-Valued Function (TVF)
+In addition to scalar functions, SQL also supports Table-Valued Functions (TVFs), which return a table as a result. This is useful when you want to encapsulate logic that returns multiple rows or columns.
+
+Let's create a TVF that retrieves all orders from a specific customer.
+
+TVF to Get Orders for a Specific Customer:
+
+sql
+Copy code
+CREATE FUNCTION GetCustomerOrders
+    (@CustomerID INT)
+RETURNS TABLE AS
+RETURN
+(
+    SELECT OrderID, OrderDate, OrderAmount
+    FROM Orders
+    WHERE CustomerID = @CustomerID
+);
+Explanation:
+
+The function GetCustomerOrders takes @CustomerID as input and returns a table containing OrderID, OrderDate, and OrderAmount for all orders placed by that customer.
+Calling the TVF:
+
+You can use the function in a FROM clause to retrieve orders for a specific customer:
+
+sql
+Copy code
+SELECT * 
+FROM dbo.GetCustomerOrders(1);
+This will return all orders for the customer with CustomerID = 1.
+
+4. Modifying or Dropping a User-Defined Function
+Alter Function: If you want to modify an existing UDF, you can use the ALTER FUNCTION statement.
+
+sql
+Copy code
+ALTER FUNCTION function_name (parameters)
+RETURNS datatype AS
+BEGIN
+    -- Modified SQL statements
+END;
+Drop Function: If you no longer need a function, you can remove it using the DROP FUNCTION statement.
+
+sql
+Copy code
+DROP FUNCTION function_name;
+5. Advantages of Using User-Defined Functions (UDFs)
+Code Reusability: UDFs allow you to encapsulate commonly used logic and reuse it across multiple queries.
+Simplifies Complex Logic: You can create UDFs to encapsulate complex calculations, reducing the complexity of individual queries.
+Improved Readability: By abstracting calculations or operations into functions, your SQL queries become easier to read and maintain.
+Performance: UDFs are precompiled, so they can be executed faster compared to writing the same logic repeatedly in every query.
+Data Abstraction: You can use UDFs to hide the complexity of calculations or operations from users and applications while exposing a simple interface.
+Key Takeaways:
+User-Defined Functions (UDFs) allow users to define custom functions for performing specific operations or calculations in SQL.
+UDFs can return a single value (scalar functions) or multiple rows and columns (table-valued functions).
+UDFs help improve code reusability, simplify complex logic, and increase query readability.
+You can modify or remove UDFs using the ALTER and DROP commands.
+UDFs are a powerful tool for encapsulating business logic in the database layer and improving query performance.
