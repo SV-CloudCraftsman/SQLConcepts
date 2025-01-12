@@ -1,6 +1,7 @@
 Triggers in SQL
 1. What is a Trigger?
-A Trigger is a special type of stored procedure that is automatically executed (or "triggered") by the database management system (DBMS) when certain events occur on a table or view. Triggers are often used to enforce business rules, ensure data integrity, or automatically update related data when certain operations (like INSERT, UPDATE, or DELETE) are performed on the table.
+A Trigger is a special type of stored procedure that is automatically executed (or "triggered") by the database management system (DBMS) when certain events occur on a table or view. 
+Triggers are often used to enforce business rules, ensure data integrity, or automatically update related data when certain operations (like INSERT, UPDATE, or DELETE) are performed on the table.
 
 2. Syntax for Creating a Trigger
 The basic syntax to create a trigger in SQL is as follows:
