@@ -1,0 +1,130 @@
+3.1. Normalization and Denormalization in SQL
+Normalization and denormalization are database design techniques that play a critical role in structuring and managing data efficiently.
+
+Normalization
+Definition:
+Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity. It involves dividing large tables into smaller, related tables and defining relationships between them.
+
+Forms of Normalization
+First Normal Form (1NF):
+
+Eliminate duplicate columns (no repeating groups).
+Ensure each column contains atomic (indivisible) values.
+Each row should be unique and identified by a primary key.
+Example:
+
+Unnormalized Table:
+
+StudentID	Name	Subjects
+1	Alice	Math, Physics
+2	Bob	Chemistry
+1NF Table:
+
+StudentID	Name	Subject
+1	Alice	Math
+1	Alice	Physics
+2	Bob	Chemistry
+Explanation: Subjects are split into individual rows to ensure atomicity.
+
+Second Normal Form (2NF):
+
+Achieve 1NF.
+Remove partial dependencies (no non-prime attribute should depend on part of a composite primary key).
+Example:
+
+1NF Table:
+
+StudentID	CourseID	StudentName	CourseName
+1	101	Alice	Math
+1	102	Alice	Physics
+2NF Tables:
+
+Student Table:
+
+StudentID	StudentName
+1	Alice
+Course Table:
+
+CourseID	CourseName
+101	Math
+102	Physics
+Enrollment Table:
+
+StudentID	CourseID
+1	101
+1	102
+Explanation: Student and course information are separated into different tables.
+
+Third Normal Form (3NF):
+
+Achieve 2NF.
+Remove transitive dependencies (non-prime attributes should depend only on the primary key).
+Example:
+
+2NF Table:
+
+StudentID	CourseID	InstructorID	InstructorName
+1	101	201	Dr. Smith
+3NF Tables:
+
+Instructor Table:
+
+InstructorID	InstructorName
+201	Dr. Smith
+Enrollment Table:
+
+StudentID	CourseID	InstructorID
+1	101	201
+Explanation: Instructor information is moved to a separate table to eliminate redundancy.
+
+Denormalization
+Definition:
+Denormalization is the process of combining normalized tables to reduce the complexity of JOIN operations, often to improve performance in read-heavy databases.
+
+When to Use Denormalization
+When JOIN queries are too complex or slow.
+When data is primarily read and rarely updated.
+When optimizing for reporting or analytical systems.
+Example:
+
+Normalized Tables:
+
+Student Table:
+
+StudentID	Name
+1	Alice
+Course Table:
+
+CourseID	CourseName
+101	Math
+Enrollment Table:
+
+StudentID	CourseID
+1	101
+Denormalized Table:
+
+StudentID	Name	CourseID	CourseName
+1	Alice	101	Math
+Explanation: Data from multiple normalized tables is combined into a single table to simplify and speed up queries.
+
+Real-Time Use Cases
+Normalization
+Scenario: An e-commerce application needs to manage a large inventory database while ensuring data integrity.
+Implementation:
+Separate Products, Categories, and Orders tables.
+Avoid duplicate entries for product details.
+Denormalization
+Scenario: A reporting system for an online learning platform needs to display aggregated data like student-course mappings quickly.
+Implementation:
+Create a denormalized table combining Students, Courses, and Enrollments.
+Reduce JOIN operations for faster report generation.
+Advantages and Disadvantages
+Normalization	Denormalization
+Reduces redundancy.	Reduces JOIN complexity.
+Ensures data consistency.	Improves query performance.
+Slower query performance (more JOINs).	May introduce data redundancy.
+Better for write-intensive systems.	Better for read-intensive systems.
+Key Points
+Normalization is essential for ensuring a clean, scalable, and consistent database design.
+Denormalization is a performance optimization technique for specific use cases like reporting.
+Use both techniques based on the application's requirements, balancing integrity and performance.
