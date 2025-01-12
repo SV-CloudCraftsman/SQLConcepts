@@ -1,0 +1,105 @@
+Common Table Expressions (CTEs) in SQL
+1. What is a CTE?
+A Common Table Expression (CTE) is a temporary result set in SQL that you can reference within a SELECT, INSERT, UPDATE, or DELETE statement. 
+CTEs allow for better readability, reusability, and organization of complex queries by allowing you to define a query in a modular way.
+
+CTEs can be thought of as a named temporary result set that exists only during the execution of a query. Once the query completes, the CTE is no longer available.
+
+2. Syntax of a CTE
+The syntax for a CTE is as follows:
+
+sql
+Copy code
+WITH cte_name AS (
+    -- SELECT statement or query
+    SELECT column1, column2
+    FROM table_name
+    WHERE condition
+)
+-- Main query
+SELECT * FROM cte_name;
+WITH: The keyword used to define a CTE.
+cte_name: The name of the CTE, which can be used in the main query.
+SELECT statement: The query that defines the data in the CTE.
+The CTE can then be referenced by its name (e.g., cte_name) in the main query that follows the CTE definition.
+3. Real-Time Example of CTE
+Suppose we have a Sales table with the following columns: SaleID, SaleAmount, SaleDate, and EmployeeID. 
+You want to calculate the total sales for each employee and then find out the top 3 employees who made the highest total sales.
+
+Example 1: Simple CTE
+Let's first create a simple CTE to calculate the total sales per employee.
+
+sql
+Copy code
+WITH EmployeeSales AS (
+    SELECT EmployeeID, SUM(SaleAmount) AS TotalSales
+    FROM Sales
+    GROUP BY EmployeeID
+)
+SELECT * FROM EmployeeSales;
+Explanation:
+The CTE EmployeeSales calculates the total sales for each EmployeeID.
+The SELECT statement after the CTE retrieves the result of the CTE.
+The CTE makes the query cleaner and easier to understand.
+Example 2: Using CTE in Complex Query
+Now, let’s say you want to find the top 3 employees who made the highest total sales. You can use the CTE we created earlier and apply the ORDER BY and LIMIT clauses in the main query.
+
+sql
+Copy code
+WITH EmployeeSales AS (
+    SELECT EmployeeID, SUM(SaleAmount) AS TotalSales
+    FROM Sales
+    GROUP BY EmployeeID
+)
+SELECT EmployeeID, TotalSales
+FROM EmployeeSales
+ORDER BY TotalSales DESC
+LIMIT 3;
+Explanation:
+The CTE EmployeeSales calculates the total sales for each employee.
+In the main query, we order the results by TotalSales in descending order to get the top employees with the highest sales.
+LIMIT 3 restricts the results to only the top 3 employees.
+4. Recursive CTEs
+A recursive CTE is a type of CTE that references itself in order to perform recursive operations, such as traversing hierarchical data (e.g., organizational charts, category hierarchies, etc.).
+
+Example 3: Recursive CTE
+Let's say we have an Employees table with columns EmployeeID, ManagerID, and EmployeeName, representing a hierarchical structure of employees where each employee has a manager. 
+We want to find all employees under a particular manager (including indirect reports).
+
+sql
+Copy code
+WITH RECURSIVE EmployeeHierarchy AS (
+    -- Base case: Select the manager (top level)
+    SELECT EmployeeID, ManagerID, EmployeeName
+    FROM Employees
+    WHERE ManagerID IS NULL  -- Assuming top-level managers have no manager
+
+    UNION ALL
+
+    -- Recursive case: Select employees under the manager
+    SELECT e.EmployeeID, e.ManagerID, e.EmployeeName
+    FROM Employees e
+    INNER JOIN EmployeeHierarchy eh ON e.ManagerID = eh.EmployeeID
+)
+SELECT * FROM EmployeeHierarchy;
+Explanation:
+The WITH RECURSIVE keyword allows for recursion in the CTE.
+The base case selects the top-level managers (those with no manager).
+The recursive case selects employees who report to the current level of managers, and it keeps going down the hierarchy until no more employees are found.
+UNION ALL is used to combine the base case and the recursive case.
+This query will return all employees who report directly or indirectly to a top-level manager, traversing the entire hierarchy.
+5. Advantages of Using CTEs
+Improved Readability: Complex queries can be broken down into manageable and understandable parts by defining subqueries within CTEs.
+Reusability: CTEs can be referenced multiple times in the main query, which eliminates the need for duplicate subqueries.
+Modularization: You can write modular and maintainable code by separating different parts of the query into logically named CTEs.
+Recursive Operations: CTEs allow for recursion, which is useful for hierarchical data such as organizational structures or category trees.
+6. When to Use CTEs?
+For readability: If you have complex queries with multiple subqueries, consider using a CTE to simplify the logic and make your query more readable.
+For modularization: When you need to break down a complex calculation into separate parts, CTEs can help organize the query logically.
+For recursion: If you need to perform recursive operations (like traversing a hierarchy), CTEs are the best tool.
+Key Takeaways
+CTEs are temporary result sets defined within a SQL query. They are created using the WITH keyword and can be referenced in the main query.
+Recursive CTEs allow you to perform operations on hierarchical data (such as employee-manager relationships).
+CTEs improve query readability, reusability, and organization, especially in complex queries.
+Recursive CTEs are powerful for working with hierarchical data structures.
+CTEs are an important tool for writing clean, efficient, and maintainable SQL code, and they are widely used in real-world scenarios, especially when dealing with complex data manipulations or hierarchical data.
