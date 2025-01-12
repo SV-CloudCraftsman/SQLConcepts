@@ -1,0 +1,112 @@
+3.3. Transactions in SQL
+1. Transactions
+A transaction in SQL is a sequence of operations (queries) that are executed as a single unit of work. A transaction ensures data integrity and consistency, especially in multi-user environments.
+
+Key Statements for Transactions:
+BEGIN TRANSACTION: Starts a transaction.
+COMMIT: Saves all changes made during the transaction permanently to the database.
+ROLLBACK: Undoes all changes made during the transaction.
+Example: Bank Transfer
+Suppose we need to transfer money from Account A to Account B. This operation requires two updates:
+
+Deduct the amount from Account A.
+Add the amount to Account B.
+Table: Accounts
+AccountID	Name	Balance
+1	Alice	5000
+2	Bob	3000
+Transaction Query
+sql
+Copy code
+BEGIN TRANSACTION;
+
+-- Deduct 1000 from Alice's account
+UPDATE Accounts 
+SET Balance = Balance - 1000 
+WHERE AccountID = 1;
+
+-- Add 1000 to Bob's account
+UPDATE Accounts 
+SET Balance = Balance + 1000 
+WHERE AccountID = 2;
+
+-- Commit the transaction
+COMMIT;
+Scenario: What if an Error Occurs?
+If the second update fails (e.g., due to a system error), Alice's account will be debited without Bob's account being credited. To prevent this:
+
+sql
+Copy code
+BEGIN TRANSACTION;
+
+-- Deduct 1000 from Alice's account
+UPDATE Accounts 
+SET Balance = Balance - 1000 
+WHERE AccountID = 1;
+
+-- Simulate an error (e.g., typo in column name)
+-- UPDATE Account 
+-- SET Balance = Balance + 1000 
+-- WHERE AccountID = 2;
+
+-- Rollback if there's an error
+ROLLBACK;
+This ensures no partial updates occur, maintaining data integrity.
+
+2. ACID Properties
+ACID stands for Atomicity, Consistency, Isolation, and Durability, which are the core principles of database transactions.
+
+1. Atomicity
+Ensures that all operations in a transaction are either completed successfully or none are applied.
+Example: In the bank transfer example, both the deduction and addition must occur, or neither.
+2. Consistency
+Ensures that the database remains in a valid state before and after a transaction.
+Example: Total balance of all accounts should remain constant after a transfer.
+3. Isolation
+Ensures that the execution of one transaction does not interfere with another.
+Example: If two users transfer money at the same time, the database must process them as if they occurred sequentially.
+4. Durability
+Ensures that once a transaction is committed, the changes are permanent, even in the case of a system crash.
+Example: Once the bank transfer is successful, the updated balances should persist, even if the server restarts.
+Real-Time Example: E-Commerce Order Processing
+When a customer places an order:
+
+Deduct the product quantity from the inventory.
+Create an order record in the database.
+Deduct the payment from the customer's account.
+sql
+Copy code
+BEGIN TRANSACTION;
+
+-- Deduct product quantity
+UPDATE Inventory 
+SET Quantity = Quantity - 1 
+WHERE ProductID = 101;
+
+-- Add order record
+INSERT INTO Orders (OrderID, CustomerID, ProductID, Quantity)
+VALUES (1001, 1, 101, 1);
+
+-- Deduct payment
+UPDATE Customers 
+SET Balance = Balance - 100 
+WHERE CustomerID = 1;
+
+-- Commit the transaction
+COMMIT;
+If any step fails (e.g., insufficient inventory), use ROLLBACK to undo all changes.
+
+Transaction Control Flow
+Step	Action
+Start	Use BEGIN TRANSACTION to start a transaction.
+Perform Operations	Execute multiple SQL operations.
+Check for Success	If all operations succeed, use COMMIT.
+Handle Errors	If an error occurs, use ROLLBACK to undo changes.
+Key Notes
+Always use transactions for critical operations like money transfers, inventory updates, or any multi-step processes.
+Ensure database systems support transactions (most relational databases like MySQL, PostgreSQL, and SQL Server do).
+Proper indexing can improve transaction performance, especially for large-scale operations.
+Best Practices
+Minimize Transaction Scope: Keep transactions as short as possible to avoid locking resources.
+Error Handling: Use TRY...CATCH blocks in systems like SQL Server for better control.
+Concurrency Control: Understand isolation levels (e.g., READ COMMITTED, SERIALIZABLE) for handling concurrent transactions.
