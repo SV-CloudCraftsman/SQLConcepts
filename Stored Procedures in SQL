@@ -1,0 +1,149 @@
+Stored Procedures in SQL
+1. What is a Stored Procedure?
+A stored procedure is a set of SQL statements that are precompiled and stored in the database. Once created, stored procedures can be executed repeatedly without needing to be recompiled, improving performance. They allow for the encapsulation of business logic at the database level and help simplify complex operations by grouping multiple SQL statements into a single callable procedure.
+
+Key Characteristics of Stored Procedures:
+Precompiled: Once the stored procedure is created, it is stored in the database and compiled only once. Subsequent calls to the procedure are executed more efficiently.
+Encapsulation: Multiple SQL statements can be wrapped into a single procedure, making the code reusable and easier to maintain.
+Improved Performance: Since the stored procedure is precompiled, it reduces the overhead of repeatedly parsing and compiling the SQL statements.
+Security: Stored procedures can restrict direct access to data by only exposing the procedure, allowing for more controlled data access.
+2. Syntax for Creating a Stored Procedure
+The basic syntax for creating a stored procedure is:
+
+sql
+Copy code
+CREATE PROCEDURE procedure_name AS
+BEGIN
+    SQL_STATEMENTS;
+END;
+procedure_name: The name of the procedure.
+SQL_STATEMENTS: The SQL statements that will be executed when the procedure is called.
+3. Real-Time Example of Stored Procedures
+Example 1: Basic Stored Procedure for Insertion
+Suppose you have a table Employees where you want to insert a new employee into the system. Instead of writing the INSERT statement repeatedly, you can create a stored procedure to simplify the process.
+
+Table: Employees
+
+EmployeeID	Name	Department	Salary
+1	Alice	HR	50000
+2	Bob	IT	60000
+Stored Procedure to Insert an Employee:
+
+sql
+Copy code
+CREATE PROCEDURE InsertEmployee
+    @EmployeeName VARCHAR(100),
+    @Department VARCHAR(50),
+    @Salary DECIMAL(10, 2)
+AS
+BEGIN
+    INSERT INTO Employees (Name, Department, Salary)
+    VALUES (@EmployeeName, @Department, @Salary);
+END;
+Explanation:
+
+The procedure InsertEmployee takes three parameters: @EmployeeName, @Department, and @Salary.
+It inserts these values into the Employees table.
+Calling the Stored Procedure:
+
+sql
+Copy code
+EXEC InsertEmployee 'John Doe', 'Marketing', 55000;
+This will insert the following record into the Employees table:
+
+EmployeeID	Name	Department	Salary
+1	Alice	HR	50000
+2	Bob	IT	60000
+3	John Doe	Marketing	55000
+Example 2: Stored Procedure with Multiple SQL Statements
+In this example, we create a stored procedure to update an employee's salary and department.
+
+Stored Procedure for Updating Salary and Department:
+
+sql
+Copy code
+CREATE PROCEDURE UpdateEmployeeDetails
+    @EmployeeID INT,
+    @NewDepartment VARCHAR(50),
+    @NewSalary DECIMAL(10, 2)
+AS
+BEGIN
+    -- Update the employee's department
+    UPDATE Employees
+    SET Department = @NewDepartment
+    WHERE EmployeeID = @EmployeeID;
+
+    -- Update the employee's salary
+    UPDATE Employees
+    SET Salary = @NewSalary
+    WHERE EmployeeID = @EmployeeID;
+END;
+Explanation:
+
+This procedure updates both the Department and Salary for a given EmployeeID.
+It uses two UPDATE statements, one to change the department and another to change the salary.
+Calling the Stored Procedure:
+
+sql
+Copy code
+EXEC UpdateEmployeeDetails 1, 'Finance', 65000;
+This will update the employee with EmployeeID = 1 (Alice) to have a new department (Finance) and salary (65000).
+
+4. Stored Procedure with Output Parameters
+Stored procedures can also return values using output parameters. This can be useful if you need to retrieve information (like the number of rows affected by the procedure).
+
+Example: Stored Procedure with an Output Parameter
+Let’s create a procedure that returns the total salary of employees in a specific department.
+
+Stored Procedure to Get Total Salary by Department:
+
+sql
+Copy code
+CREATE PROCEDURE GetTotalSalaryByDepartment
+    @Department VARCHAR(50),
+    @TotalSalary DECIMAL(10, 2) OUTPUT
+AS
+BEGIN
+    SELECT @TotalSalary = SUM(Salary)
+    FROM Employees
+    WHERE Department = @Department;
+END;
+Explanation:
+
+The GetTotalSalaryByDepartment procedure calculates the total salary for a given department and assigns the result to the output parameter @TotalSalary.
+Calling the Stored Procedure:
+
+sql
+Copy code
+DECLARE @TotalSalary DECIMAL(10, 2);
+
+EXEC GetTotalSalaryByDepartment 'IT', @TotalSalary OUTPUT;
+
+SELECT @TotalSalary AS 'TotalSalaryInIT';
+This will calculate the total salary of employees in the IT department and store it in the @TotalSalary variable.
+
+5. Modifying or Dropping a Stored Procedure
+Alter Procedure: If you want to modify a stored procedure after it’s been created, use the ALTER PROCEDURE statement.
+
+sql
+Copy code
+ALTER PROCEDURE procedure_name AS
+BEGIN
+    -- Modified SQL statements
+END;
+Drop Procedure: If you no longer need a stored procedure, you can remove it using the DROP PROCEDURE statement.
+
+sql
+Copy code
+DROP PROCEDURE procedure_name;
+6. Advantages of Using Stored Procedures
+Performance: Stored procedures are precompiled, meaning they execute faster than running multiple individual SQL queries because SQL statements are parsed and optimized only once.
+Reusability: A stored procedure can be executed multiple times without needing to rewrite the logic.
+Maintainability: Centralizing business logic within stored procedures makes it easier to manage and maintain. You can modify the procedure in one place instead of updating multiple queries in your application code.
+Security: By using stored procedures, you can grant permissions to execute specific procedures without exposing the underlying tables directly.
+Key Takeaways:
+Stored Procedures are precompiled collections of SQL statements stored in the database.
+They encapsulate SQL logic, allowing it to be executed repeatedly without needing to be recompiled each time.
+They help with performance optimization, security, and maintainability.
+Stored procedures can accept input parameters, perform multiple SQL operations, and even return output parameters.
+Modifying or removing stored procedures is simple using ALTER and DROP commands.
