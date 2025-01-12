@@ -1,0 +1,148 @@
+3.5. Views in SQL
+1. What is a View?
+A view in SQL is a virtual table that is created by a query on one or more underlying tables. It is not a physical table but rather a stored SQL query that can be treated like a table in other queries. When you query a view, SQL automatically executes the underlying query and returns the results as if they were a table.
+
+Key Characteristics of Views:
+Virtual Table: A view does not store data itself; instead, it retrieves data from the base tables whenever it is queried.
+Simplify Complex Queries: Views help simplify complex queries by encapsulating complex joins, unions, or aggregate functions.
+Security: Views can restrict access to sensitive data by allowing users to only access specific columns or rows without granting direct access to the base tables.
+2. Creating Views
+Syntax for Creating a View:
+
+sql
+Copy code
+CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+view_name: The name of the view.
+The SELECT statement defines what data the view will return.
+3. Real-Time Example of Views
+Example 1: Simplifying Complex Queries
+Scenario: You have a Customers table and an Orders table, and you frequently need to find the total amount spent by each customer. This requires joining both tables and grouping by CustomerID.
+
+Tables:
+
+Customers
+
+CustomerID	Name
+1	Alice
+2	Bob
+3	Carol
+Orders
+
+OrderID	CustomerID	Amount
+101	1	500
+102	1	300
+103	2	700
+104	3	400
+Query to find total spent by each customer:
+
+sql
+Copy code
+SELECT c.Name, SUM(o.Amount) AS TotalSpent
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.Name;
+Solution with a View: Instead of writing the above complex query every time, you can create a view.
+
+sql
+Copy code
+CREATE VIEW CustomerTotalSpent AS
+SELECT c.Name, SUM(o.Amount) AS TotalSpent
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.Name;
+Using the View: Now, you can simply query the view as if it were a table.
+
+sql
+Copy code
+SELECT * FROM CustomerTotalSpent;
+This will return the same result without needing to write the complex join and aggregation logic repeatedly.
+
+Example 2: Restricting Access to Sensitive Data
+Scenario: You have a Employees table that contains sensitive information such as salary details, but you want to provide some users with access to only non-sensitive data like employee names and departments.
+
+Table: Employees
+
+EmployeeID	Name	Department	Salary
+1	Alice	HR	50000
+2	Bob	IT	60000
+3	Carol	Finance	70000
+Create a View to Hide Sensitive Data:
+
+sql
+Copy code
+CREATE VIEW EmployeeView AS
+SELECT Name, Department
+FROM Employees;
+Grant Access to View: Now, you can grant access to this view to users who should not see sensitive information (like salaries), ensuring that they can only access non-sensitive data.
+
+sql
+Copy code
+GRANT SELECT ON EmployeeView TO user_name;
+Querying the View:
+
+sql
+Copy code
+SELECT * FROM EmployeeView;
+This will return the following result:
+
+Name	Department
+Alice	HR
+Bob	IT
+Carol	Finance
+Users querying this view will not see the Salary column, even though it exists in the original Employees table.
+
+4. Modifying Data Through Views
+Views and Updateability: In some cases, you can insert, update, or delete data through a view, but the view must be simple and directly mapped to the underlying table columns. Views that involve complex queries like joins, aggregations, or groupings are usually not updatable.
+Example: Updatable View:
+Suppose you have a view that represents a single table (Employees), and you want to update employee names through the view.
+
+sql
+Copy code
+CREATE VIEW EmployeeNames AS
+SELECT EmployeeID, Name
+FROM Employees;
+
+-- You can update the Name column directly through the view
+UPDATE EmployeeNames
+SET Name = 'Alicia'
+WHERE EmployeeID = 1;
+Example: Non-Updatable View:
+If your view involves a JOIN or AGGREGATE function, it becomes non-updatable. For instance, if the view joins Employees and Departments and groups by department:
+
+sql
+Copy code
+CREATE VIEW EmployeeDepartmentInfo AS
+SELECT e.EmployeeID, e.Name, d.DepartmentName
+FROM Employees e
+JOIN Departments d ON e.DepartmentID = d.DepartmentID;
+
+-- You cannot update the view directly
+UPDATE EmployeeDepartmentInfo
+SET DepartmentName = 'HR'
+WHERE EmployeeID = 1; -- This will result in an error
+In such cases, you would need to update the underlying Employees or Departments table directly.
+
+5. Dropping a View
+To remove a view that is no longer needed, use the DROP VIEW statement:
+
+sql
+Copy code
+DROP VIEW view_name;
+For example, to remove the CustomerTotalSpent view:
+
+sql
+Copy code
+DROP VIEW CustomerTotalSpent;
+6. Performance Considerations
+Views do not store data: They only store the query and compute the result when queried. However, they can simplify complex queries and improve developer productivity.
+Performance: Because views are computed every time they are queried, performance can be affected, especially if the view involves complex operations (joins, aggregations, etc.). You should use indexes on the underlying tables to help optimize performance.
+Materialized Views (if supported): Some databases support materialized views, which are like regular views but store the results physically. These views are updated periodically, improving performance for complex queries.
+Key Takeaways:
+Views are virtual tables created by executing queries on one or more base tables. They simplify querying and improve security.
+Views can encapsulate complex SQL logic, making it reusable and easy to maintain.
+Security: Views can restrict access to sensitive columns or rows.
+Views can simplify complex queries but may not always be updatable (depending on their complexity).
+Performance: While views provide simplicity, they do not store data and can be less efficient for very complex operations. Always consider indexing the underlying tables.
