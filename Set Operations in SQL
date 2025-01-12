@@ -1,0 +1,131 @@
+2.4. Set Operations in SQL
+Set operations in SQL allow you to combine the results of two or more SELECT queries to create a single result set. These operations work on queries with the same number of columns and compatible data types.
+
+1. UNION
+Description: Combines the results of two or more SELECT queries and removes duplicate rows.
+Use Case: Retrieve a combined list of customers from two separate tables, ensuring there are no duplicates.
+Example: Tables:
+
+Customers_Online | CustomerID | Name | |------------|-------------| | 1 | John Doe | | 2 | Alice Smith |
+
+Customers_Offline | CustomerID | Name | |------------|-------------| | 3 | Bob Brown | | 1 | John Doe |
+
+Query:
+
+sql
+Copy code
+SELECT Name FROM Customers_Online
+UNION
+SELECT Name FROM Customers_Offline;
+Result:
+
+Name
+John Doe
+Alice Smith
+Bob Brown
+Explanation:
+
+Combines rows from both tables and removes duplicates (John Doe appears only once).
+2. UNION ALL
+Description: Combines the results of two or more SELECT queries without removing duplicates.
+Use Case: Retrieve all customer records from two separate tables, including duplicates for analytical purposes.
+Query:
+
+sql
+Copy code
+SELECT Name FROM Customers_Online
+UNION ALL
+SELECT Name FROM Customers_Offline;
+Result:
+
+Name
+John Doe
+Alice Smith
+Bob Brown
+John Doe
+Explanation:
+
+Combines rows from both tables and keeps duplicates.
+3. INTERSECT
+Description: Returns only the rows that are common to the result sets of both SELECT queries.
+Use Case: Find customers who exist in both online and offline databases.
+Query:
+
+sql
+Copy code
+SELECT Name FROM Customers_Online
+INTERSECT
+SELECT Name FROM Customers_Offline;
+Result:
+
+Name
+John Doe
+Explanation:
+
+Returns only the common record, John Doe.
+4. EXCEPT
+Description: Returns the rows from the first SELECT query that are not present in the second SELECT query.
+Use Case: Find customers who are only in the online database and not in the offline database.
+Query:
+
+sql
+Copy code
+SELECT Name FROM Customers_Online
+EXCEPT
+SELECT Name FROM Customers_Offline;
+Result:
+
+Name
+Alice Smith
+Explanation:
+
+Returns rows from the online database that do not exist in the offline database.
+Real-Time Use Cases
+1. UNION
+Scenario: Combine data from two regional sales databases. Query:
+sql
+Copy code
+SELECT Region, TotalSales FROM Sales_Region1
+UNION
+SELECT Region, TotalSales FROM Sales_Region2;
+2. UNION ALL
+Scenario: Generate a complete transaction log, including duplicates, from multiple sources. Query:
+sql
+Copy code
+SELECT TransactionID, Amount FROM Transactions_Online
+UNION ALL
+SELECT TransactionID, Amount FROM Transactions_Offline;
+3. INTERSECT
+Scenario: Identify products that are both in-stock in Warehouse A and Warehouse B. Query:
+sql
+Copy code
+SELECT ProductID FROM Warehouse_A
+INTERSECT
+SELECT ProductID FROM Warehouse_B;
+4. EXCEPT
+Scenario: Find customers who have made inquiries but not placed any orders. Query:
+sql
+Copy code
+SELECT CustomerID FROM Inquiries
+EXCEPT
+SELECT CustomerID FROM Orders;
+Key Points to Remember
+Column Matching:
+
+The number and order of columns must be the same in all queries involved.
+The data types must be compatible.
+UNION vs. UNION ALL:
+
+Use UNION to eliminate duplicates.
+Use UNION ALL for better performance when duplicates are acceptable.
+INTERSECT:
+
+Returns only the rows present in all the queries.
+EXCEPT:
+
+Removes rows from the first query that also exist in the second query.
+Performance Tips
+Ensure indexes exist on columns used in the queries for better performance.
+Use UNION ALL when you don't need to remove duplicates, as it is faster than UNION.
+Avoid using INTERSECT and EXCEPT on large datasets without proper indexing.
+By mastering set operations, you can effectively combine and filter data from multiple sources, enabling robust query development for real-world applications.
