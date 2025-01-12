@@ -1,0 +1,104 @@
+1.1 Database Basics
+Understanding the basics of databases is fundamental to mastering SQL. Let’s break down each of these terms with explanations and real-world examples.
+
+1.1.1 Database
+A database is a collection of organized data. Databases store, retrieve, and manage large amounts of structured data efficiently. In the context of SQL, databases help organize information into tables that are easy to manage and manipulate.
+
+Real-World Example: Think of a library database. The library database might contain information on books, authors, and members. Each of these pieces of information would be stored in separate tables, such as:
+
+Books table: Information about books in the library.
+Authors table: Information about authors who wrote those books.
+Members table: Information about library members.
+sql
+Copy code
+CREATE DATABASE Library;
+1.1.2 Table
+A table is a collection of related data organized in rows and columns within a database. Tables represent entities in the real world. For example, in a library database, a table may represent books, authors, or members.
+
+Rows: Each row represents a single record.
+Columns: Each column represents a specific attribute or property of that record.
+Real-World Example: A Books table might look like this:
+
+Book_ID	Title	Author_ID	Published_Year
+1	"Harry Potter"	101	1997
+2	"The Hobbit"	102	1937
+3	"1984"	103	1949
+sql
+Copy code
+CREATE TABLE Books (
+    Book_ID INT PRIMARY KEY,
+    Title VARCHAR(100),
+    Author_ID INT,
+    Published_Year INT
+);
+1.1.3 Row
+A row is a single record in a table. It contains all the attributes (columns) for a specific instance of an entity. Each row in a table must be unique, and it is typically identified using a Primary Key.
+
+Real-World Example: In the Books table, a row represents a specific book. For example:
+
+Row 1: Represents the book "Harry Potter" written by author with ID 101, published in 1997.
+Row 2: Represents the book "The Hobbit" written by author with ID 102, published in 1937.
+sql
+Copy code
+INSERT INTO Books (Book_ID, Title, Author_ID, Published_Year) 
+VALUES (1, 'Harry Potter', 101, 1997);
+1.1.4 Column
+A column represents a specific field or attribute in the table. Each column stores data of a particular data type (e.g., integer, string, date). Columns help to define the structure of a table and give meaning to the data.
+
+Real-World Example: In the Books table, the columns might be:
+
+Book_ID: A unique identifier for the book (integer).
+Title: The name of the book (string).
+Author_ID: The ID linking to the author of the book (integer).
+Published_Year: The year the book was published (integer).
+sql
+Copy code
+CREATE TABLE Books (
+    Book_ID INT,
+    Title VARCHAR(100),
+    Author_ID INT,
+    Published_Year INT
+);
+1.1.5 Primary Key
+A Primary Key is a column (or a combination of columns) that uniquely identifies each record in a table. The values in the primary key column must be unique and not null. Every table must have a primary key to ensure data integrity.
+
+Real-World Example: In the Books table, Book_ID is the primary key because each book has a unique ID.
+
+sql
+Copy code
+CREATE TABLE Books (
+    Book_ID INT PRIMARY KEY,
+    Title VARCHAR(100),
+    Author_ID INT,
+    Published_Year INT
+);
+Primary Key: Ensures that no two books in the library can have the same Book_ID.
+1.1.6 Foreign Key
+A Foreign Key is a column (or combination of columns) in one table that links to the Primary Key in another table. It creates a relationship between two tables. The foreign key ensures that the value in the column matches an existing value in the primary key column of the other table, thus maintaining referential integrity.
+
+Real-World Example: In the Books table, Author_ID is a foreign key that links to the Author_ID column in the Authors table.
+
+Books table: References the authors who wrote the books.
+Authors table: Contains data about the authors.
+sql
+Copy code
+CREATE TABLE Authors (
+    Author_ID INT PRIMARY KEY,
+    Author_Name VARCHAR(100)
+);
+
+CREATE TABLE Books (
+    Book_ID INT PRIMARY KEY,
+    Title VARCHAR(100),
+    Author_ID INT,
+    Published_Year INT,
+    FOREIGN KEY (Author_ID) REFERENCES Authors(Author_ID)
+);
+Foreign Key: Ensures that every Author_ID in the Books table must correspond to a valid Author_ID in the Authors table. This prevents adding books with non-existing authors.
+Summary
+Database: A collection of data organized in tables.
+Table: A set of related data organized in rows and columns.
+Row: A single record in a table.
+Column: An attribute that contains data of a specific type.
+Primary Key: A unique identifier for each record in a table.
+Foreign Key: A reference to a primary key in another table, establishing relationships between tables.
