@@ -1,0 +1,127 @@
+1.4. Data Types in SQL
+SQL data types define the kind of data a column can hold in a table. Choosing the right data type ensures data integrity, optimized storage, and better query performance. Below are the commonly used data types with explanations and real-world examples.
+
+1.4.1 Common SQL Data Types
+1. INT (Integer)
+Description: Used to store whole numbers (positive, negative, or zero).
+Storage: Typically 4 bytes.
+Example Use Case: Employee IDs, age, or quantities.
+Example:
+
+sql
+Copy code
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(50),
+    Stock INT
+);
+ProductID	ProductName	Stock
+1	Laptop	50
+2	Smartphone	100
+2. VARCHAR (Variable-length string)
+Description: Stores variable-length text. You specify the maximum length (e.g., VARCHAR(50)).
+Storage: Length of the text + 1 or 2 bytes (for length information).
+Example Use Case: Names, addresses, or email fields.
+Example:
+
+sql
+Copy code
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(255)
+);
+CustomerID	Name	Email
+1	John Doe	john@example.com
+2	Alice Johnson	alice@domain.com
+3. DATE
+Description: Stores calendar dates in the format YYYY-MM-DD.
+Storage: 3 bytes.
+Example Use Case: Birthdates, hire dates, or order dates.
+Example:
+
+sql
+Copy code
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    HireDate DATE
+);
+EmployeeID	Name	HireDate
+1	Bob Smith	2022-01-15
+2	Alice Lee	2023-07-20
+4. FLOAT (Floating-Point Numbers)
+Description: Stores approximate decimal numbers, commonly used for scientific calculations or when precision is not critical.
+Storage: 4 bytes for FLOAT, 8 bytes for DOUBLE.
+Example Use Case: Product prices or temperature readings.
+Example:
+
+sql
+Copy code
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(50),
+    Price FLOAT
+);
+ProductID	ProductName	Price
+1	Tablet	299.99
+2	Monitor	179.50
+5. BOOLEAN
+Description: Stores TRUE or FALSE values. Some databases store them as integers (1 for TRUE, 0 for FALSE).
+Storage: 1 byte.
+Example Use Case: Flags like is_active, is_verified, or is_deleted.
+Example:
+
+sql
+Copy code
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY,
+    Username VARCHAR(50),
+    IsActive BOOLEAN
+);
+UserID	Username	IsActive
+1	john_doe	TRUE
+2	alice_wise	FALSE
+1.4.2 Choosing Data Types
+When designing a table, consider the following:
+
+Storage Efficiency: Use the smallest data type that meets the requirement (e.g., TINYINT instead of INT for small values).
+Accuracy: Use precise data types for monetary values (e.g., DECIMAL instead of FLOAT).
+Future Growth: Allow room for growth by choosing appropriate lengths (e.g., VARCHAR(255) for email addresses).
+1.4.3 Full Real-World Example
+Create a table to store orders in an e-commerce application.
+
+sql
+Copy code
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerName VARCHAR(100),
+    OrderDate DATE,
+    TotalAmount FLOAT,
+    IsDelivered BOOLEAN
+);
+Insert Data:
+
+sql
+Copy code
+INSERT INTO Orders (OrderID, CustomerName, OrderDate, TotalAmount, IsDelivered)
+VALUES 
+(1, 'John Doe', '2023-12-25', 150.75, TRUE),
+(2, 'Alice Lee', '2023-12-26', 89.50, FALSE);
+Query Data:
+
+sql
+Copy code
+SELECT * FROM Orders WHERE IsDelivered = TRUE;
+Result:
+
+OrderID	CustomerName	OrderDate	TotalAmount	IsDelivered
+1	John Doe	2023-12-25	150.75	TRUE
+Summary of Common Data Types
+Data Type	Description	Example
+INT	Whole numbers	Employee ID, quantity
+VARCHAR	Variable-length text	Names, emails, addresses
+DATE	Calendar dates	Birthdate, order date
+FLOAT	Approximate decimal numbers	Prices, scientific calculations
+BOOLEAN	True/False values	Active status, flags
+Mastering data types ensures better database design, optimized performance, and easier data management in your applications!
